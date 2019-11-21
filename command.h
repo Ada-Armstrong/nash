@@ -13,24 +13,11 @@ enum s_token {
 	NONE
 };
 
-enum io_redirection {
-	NONE = 0,
-	IN,
-	OUT,
-	APPEND_OUT,
-	IN_OUT
-};
-
 struct cmd {
-	// first token is the command, rest are args
 	char **tokens;
 	enum s_token split_token;
-	// 1 if ! is the first token before the command
 	int negate;
-	// used for a chain of pipes, the new input file descriptor
 	int read_fid;
-	enum io_redirection dir;
-	char *redir_filename;
 };
 
 struct cmd_array {
