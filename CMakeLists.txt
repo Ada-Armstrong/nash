@@ -5,17 +5,18 @@ SET(PROJECT_NAME nash)
 project(${PROJECT_NAME} LANGUAGES C)
 
 SET(SOURCES main.c
-			command.c
-			command.h
-			execute.c
-			execute.h
-			input.c
-			input.h
-			tokenize.c
-			tokenize.h
+			src/command.c
+			include/command.h
+			src/execute.c
+			include/execute.h
+			src/input.c
+			include/input.h
+			src/tokenize.c
+			include/tokenize.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 if (CMAKE_BUILD_TYPE EQUAL Debug)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
