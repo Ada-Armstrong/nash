@@ -17,7 +17,7 @@ static char *final_word(char *string, int end)
 
 	char *final = malloc(sizeof(*final) * (end - start + 2));
 	if (!final) {
-		// memory allocation error
+		fprintf(stderr, "final_word: Out of memory error\n");
 		return NULL;
 	}
 
@@ -31,34 +31,56 @@ static char *final_word(char *string, int end)
 	return final;
 }
 
+static int my_readline(char **line, int *index, int *max)
+{
+	int i = *index;
+	int maxlen = *max;
+	char c;
+	char *tmp;
+
+	while (1) {
+		c = getc(stdin);
+		if (c == EOF || c == '\n')
+			break;
+
+		if (i >= maxlen - 1) {
+			maxlen *= 2;
+			tmp = realloc(*line, sizeof(**line) * maxlen);
+			if (!tmp) {
+				fprintf(stderr, "readline: Out of memory error\n");
+				free(*line);
+				return 0;
+			}
+			*line = tmp;
+		}
+
+		(*line)[i] = c;
+		++i;
+	}
+	*index = i;
+	*max = maxlen;
+	return c == EOF ? -1 : 1;
+}
+
 char *read_input(char *prompt, char **cont_strings)
 {
 	int i = 0;
-	int maxlen = 10;
+	int maxlen = 2;
 	char *line = malloc(sizeof(*line) * maxlen);
+	if (!line) {
+		fprintf(stderr, "read_input: Out of memory error\n");
+		exit(1);
+	}
 	char *tmp = NULL;
-	char c;
 
-	int finished = 0;	
-	while (1) {
-		while (1) {
-			c = getc(stdin);
-			if (c == EOF || c == '\n')
-				break;
-
-			if (i >= maxlen - 1) {
-				maxlen *= 2;
-				tmp = realloc(line, sizeof(*line) * maxlen);
-				if (!tmp) {
-					free(line);
-					return NULL;
-				}
-				line = tmp;
-			}
-
-			line[i] = c;
-			++i;
-		}
+	int finished = 1;
+	do {
+		if (!finished)
+			printf("%s", prompt);
+		int retval = my_readline(&line, &i, &maxlen);
+		
+		if (retval == 0)
+			return NULL;
 
 		line[i] = '\0';
 		char *final = final_word(line, i - 1);
@@ -73,18 +95,19 @@ char *read_input(char *prompt, char **cont_strings)
 			}
 		}
 
+		if (!finished && retval < 0) {
+			fprintf(stderr,
+				"Read EOF but last token was '%s'\n", final);
+			return NULL;
+		}
 		free(final);
-		if (finished)
-			break;
-		printf("%s", prompt);
-	}
+	} while (!finished);
 
 	tmp = realloc(line, sizeof(*line) * i + 1);
 	if (!tmp) {
 		free(line);
-		return NULL;
+		exit(1);
 	}
 
 	return tmp;
 }
-
