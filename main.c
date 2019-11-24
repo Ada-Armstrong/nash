@@ -11,9 +11,8 @@ int main()
 	
 	char cwd[1024];
 	char *line;
-	int running = 1;
 
-	while (running) {
+	while (1) {
 		getcwd(cwd, sizeof(cwd));
 		// should check if cwd is NULL
 		printf("%s$ ", cwd);
@@ -33,7 +32,7 @@ int main()
 			return 1;
 
 		if (execute(cmds) == EXIT_SHELL)
-			running = 0;
+			break;
 
 		destroy_tokens(tokens);
 		destroy_cmd_array(cmds);
