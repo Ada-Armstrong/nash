@@ -29,7 +29,7 @@ static int execute_program(struct cmd *c)
 			close(c->read_fid);
 		}
 		execvp(c->tokens[0], c->tokens);
-		printf("1: Unknown command %s\n", c->tokens[0]);
+		fprintf(stderr, "1: Unknown command %s\n", c->tokens[0]);
 		exit(1);
 	}
 
@@ -108,7 +108,7 @@ static int execute_pipe(struct cmd_array *cmds)
 	pid_t first_pid;
 
 	if (pipe(pipefid) < 0) {
-		printf("Pipe failed\n");
+		fprintf(stderr, "Pipe failed\n");
 		exit(1);
 	}
 
@@ -133,7 +133,7 @@ static int execute_pipe(struct cmd_array *cmds)
 		close(pipefid[1]);
 
 		execvp(c1->tokens[0], c1->tokens);
-		printf("2: Unknown command %s\n", c1->tokens[0]);
+		fprintf(stderr, "2: Unknown command %s\n", c1->tokens[0]);
 		exit(1);
 	}
 	// next process won't need to write to this pipe
@@ -178,4 +178,33 @@ int execute(struct cmd_array *cmds)
 	}
 
 	return status;
+}
+
+char *execute_subshell(char *line)
+{
+	int status;
+	int pipefid[2];
+
+	if (pipe(pipefid) < 0) {
+		fprintf(stderr, "Pipe failed\n");
+		exit(1);
+	}
+
+	pid_t child_pid = fork();
+	
+	if (child_pid == 0) {
+		dup2(pipefid[0], STDIN_FILENO);
+		close(pipefid[0]);
+		dup2(pipefid[1], STDOUT_FILENO);
+		close(pipefid[1]);
+
+		execvp("nash", NULL);
+		fprintf(stderr, "Subshell error\n");
+		exit(1);
+	}
+	// write has quite a few errors, consider handling them
+	write(pipefid[1], line, strlen(line));
+	// same with write
+	read();
+	waitpid(child_pid, &status, WUNTRACED);
 }

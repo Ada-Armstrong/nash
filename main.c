@@ -5,12 +5,12 @@
 
 int main()
 {
-	// if one of cont_strings is the last word in a line continue reading
+	// if one of cont_strings is the last word in a line,
+	// continue reading input
 	char *cont_strings[] = {"\\", "&&", "||", "|", NULL};
 	
-	const size_t size = 1024;
-	char cwd[size];
-
+	char cwd[1024];
+	char *line;
 	int running = 1;
 
 	while (running) {
@@ -18,19 +18,25 @@ int main()
 		// should check if cwd is NULL
 		printf("%s$ ", cwd);
 
-		char *string = read_input("> ", cont_strings);
+		line = read_input("> ", cont_strings);
+		if (!line)
+			return 1;
 
 		int len = 0;
-		char **tokens = tokenize(string, " ", &len);
+		char **tokens = tokenize(line, " ", &len);
+		free(line);
+		if (!tokens)
+			return 1;
 
 		struct cmd_array *cmds = create_cmd_array(tokens);
+		if (!cmds)
+			return 1;
 
 		if (execute(cmds) == EXIT_SHELL)
 			running = 0;
 
-		destroy_cmd_array(cmds);
 		destroy_tokens(tokens);
-		free(string);
+		destroy_cmd_array(cmds);
 	}
 
 	return 0;
