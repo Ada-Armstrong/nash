@@ -197,14 +197,54 @@ char *execute_subshell(char *line)
 		close(pipefid[0]);
 		dup2(pipefid[1], STDOUT_FILENO);
 		close(pipefid[1]);
-
-		execvp("nash", NULL);
+		// run nash in subshell mode
+		char *nash[] = {"nash", "-c", line, NULL};
+		execvp(nash[0], nash);
 		fprintf(stderr, "Subshell error\n");
 		exit(1);
 	}
-	// write has quite a few errors, consider handling them
-	write(pipefid[1], line, strlen(line));
-	// same with write
-	read();
+
+	close(pipefid[1]);
 	waitpid(child_pid, &status, WUNTRACED);
+
+	char c[1];
+	int maxlen = 2;
+	int i = 0;
+	char *new_line = malloc(sizeof(*new_line) * maxlen);
+	char *tmp;
+	if (!new_line) {
+		close(pipefid[0]);
+		close(pipefid[1]);
+		return NULL;
+	}
+	// read has a few errors to consider
+	while (read(pipefid[0], c, 1) > 0) {
+		if (i >= maxlen - 1) {
+			maxlen *= 2;
+			tmp = realloc(new_line, sizeof(*new_line) * maxlen);
+			if (!tmp) {
+				fprintf(stderr,
+					"execute_subshell: Memory error\n");
+				free(new_line);
+				return NULL;
+			}
+			new_line = tmp;
+		}
+
+		new_line[i] = c[0];
+		++i;
+	}
+
+	close(pipefid[0]);
+
+	tmp = realloc(new_line, sizeof(*new_line) * (i + 1));
+	if (!tmp) {
+		fprintf(stderr, "execute_subshell: Memory error\n");
+		free(new_line);
+		return NULL;
+	}
+	new_line = tmp;
+	new_line[i] = '\0';
+
+	return new_line;
 }

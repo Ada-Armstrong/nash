@@ -10,4 +10,6 @@ extern const int EXIT_SHELL;
 
 int execute(struct cmd_array *cmds);
 
+char *execute_subshell(char *line);
+
 #endif
