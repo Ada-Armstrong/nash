@@ -10,6 +10,6 @@
  * printed if another line has to be read. cont_strings should be NULL
  * terminated. Client is responisble for freeing memory.
  */
-char *read_input(char *prompt, char **cont_strings);
+char *read_input(char *prompt, char **cont_strings, int *len);
 
 #endif

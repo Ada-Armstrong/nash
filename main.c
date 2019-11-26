@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include "input.h"
+#include "expansion.h"
 #include "tokenize.h"
 #include "execute.h"
 
 int handle_args(char **arg); 
 int run_subshell_mode(char *line);
-
 
 int main(int argc, char *argv[])
 {
@@ -22,13 +22,20 @@ int main(int argc, char *argv[])
 		// should check if cwd is NULL
 		printf("%s$ ", cwd);
 
-		line = read_input("> ", cont_strings);
+		int len = 0;
+		line = read_input("> ", cont_strings, &len);
 		if (!line)
 			return 1;
 
-		int len = 0;
-		char **tokens = tokenize(line, " ", &len);
+		char *expanded = expand(line, len);
+		if (!expanded) {
+			free(line);
+			return 1;
+		}
 		free(line);
+
+		int num_tokens= 0;
+		char **tokens = tokenize(expanded, " \t\n", &num_tokens);
 		if (!tokens)
 			return 1;
 

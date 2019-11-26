@@ -62,7 +62,7 @@ static int my_readline(char **line, int *index, int *max)
 	return c == EOF ? -1 : 1;
 }
 
-char *read_input(char *prompt, char **cont_strings)
+char *read_input(char *prompt, char **cont_strings, int *len)
 {
 	int i = 0;
 	int maxlen = 2;
@@ -108,6 +108,7 @@ char *read_input(char *prompt, char **cont_strings)
 		free(line);
 		exit(1);
 	}
+	*len = i;
 
 	return tmp;
 }
