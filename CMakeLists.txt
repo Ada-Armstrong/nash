@@ -5,14 +5,18 @@ SET(PROJECT_NAME nash)
 project(${PROJECT_NAME} LANGUAGES C)
 
 SET(SOURCES main.c
-			src/command.c
-			include/command.h
-			src/execute.c
-			include/execute.h
-			src/input.c
-			include/input.h
-			src/tokenize.c
-			include/tokenize.h
+	src/input.c
+	include/input.h
+	src/expansion.c
+	include/expansion.h
+	src/subshell.c
+	include/subshell.h
+	src/tokenize.c
+	include/tokenize.h
+	src/command.c
+	include/command.h
+	src/execute.c
+	include/execute.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

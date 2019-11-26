@@ -1,5 +1,5 @@
-#ifndef __MY_EXECUTE_H__
-#define __MY_EXECUTE_H__
+#ifndef __NASH_EXECUTE_H__
+#define __NASH_EXECUTE_H__
 
 #include <assert.h>
 #include <sys/wait.h>
