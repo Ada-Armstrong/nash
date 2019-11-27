@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "subshell.h"
+#include "variables.h"
 
 char *expand(char *line, int len);
 

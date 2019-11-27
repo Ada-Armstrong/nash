@@ -6,6 +6,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-int expand_subshell(char **line, int i, int len, char *subshell_line, int s_len);
+char *execute_subshell(char *line, int *len);
 
 #endif

@@ -3,7 +3,7 @@
 // temporary
 char *nash_path = "/home/chris/Projects/Shell/nash/build-debug/nash";
 
-static char *execute_subshell(char *line, int *len)
+char *execute_subshell(char *line, int *len)
 {
 	int status;
 	int pipefid[2];
@@ -71,25 +71,4 @@ static char *execute_subshell(char *line, int *len)
 	new_line[i] = '\0';
 
 	return new_line;
-}
-
-int expand_subshell(char **line, int i, int len, char *subshell_line, int s_len)
-{
-	int out_len = 0;
-	char *output = execute_subshell(subshell_line, &out_len);
-	if (!output)
-		return -1;
-
-	char *tmp = realloc(*line, sizeof(**line) * (len + out_len));
-	if (!tmp)
-		return -1;
-	*line = tmp;
-	
-	
-	for (int j = i; j < i + out_len; ++j) {
-		(*line)[j] = output[j - i];
-	}
-	free(output);
-
-	return out_len;
 }

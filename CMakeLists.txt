@@ -11,6 +11,8 @@ SET(SOURCES main.c
 	include/expansion.h
 	src/subshell.c
 	include/subshell.h
+	src/variables.c
+	include/variables.h
 	src/tokenize.c
 	include/tokenize.h
 	src/command.c

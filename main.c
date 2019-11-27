@@ -3,12 +3,16 @@
 #include "expansion.h"
 #include "tokenize.h"
 #include "execute.h"
+#include "variables.h"
 
 int handle_args(char **arg); 
 int run_subshell_mode(char *line);
 
 int main(int argc, char *argv[])
 {
+	if (!init_variables())
+		return 1;
+
 	if (argc > 1 && !handle_args(++argv))
 		return 1;
 
