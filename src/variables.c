@@ -10,6 +10,12 @@ int init_variables(void)
 int add_var(char *var, char *cmd)
 {
 	ENTRY e = {var, cmd};
+	// check if var is already defined
+	ENTRY *ret = hsearch(e, FIND);
+	if (ret) {
+		free(ret->key);
+		free(ret->data);
+	}
 	if (!hsearch(e, ENTER)) {
 		fprintf(stderr, "Failed to add '%s'\n", var);
 		return 0;

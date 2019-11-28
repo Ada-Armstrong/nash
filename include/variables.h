@@ -4,6 +4,7 @@
 #define _GNU_SOURCE
 #include <search.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 int init_variables(void);
 
