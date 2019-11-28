@@ -1,4 +1,4 @@
-# nash - never alive shell
+# nash - Never Alive SHell
 
 ## Features
 * Piping
