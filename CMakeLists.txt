@@ -19,6 +19,8 @@ SET(SOURCES main.c
 	include/command.h
 	src/execute.c
 	include/execute.h
+	src/builtin.c
+	include/builtin.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

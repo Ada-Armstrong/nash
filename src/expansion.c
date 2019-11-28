@@ -54,7 +54,7 @@ static char *get_subshell_cmds(char *line, int *len)
 static char *get_variable_string(char *line, int *len)
 {
 	int i = 0;
-	while (line[i] != ' ' || line[i] != '\n')
+	while (line[i] && (line[i] != ' ' || line[i] != '\n'))
 		++i;
 
 	char *var = malloc(sizeof(*var) * (i + 1));
@@ -81,7 +81,7 @@ static int append_string(char **line, int i, int len,
 	
 	
 	for (int j = i; j < i + a_len; ++j) {
-		(*line)[j] = output[j - i];
+		(*line)[j] = append[j - i];
 	}
 
 	return 1;
@@ -96,7 +96,7 @@ static int expand_subshell(char **line, int i, int len,
 		return -1;
 
 	if (append_string(line, i, len, output, out_len) < 0)
-		return -1
+		return -1;
 	free(output);
 
 	return out_len;

@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
 	char *cont_strings[] = {"\\", "&&", "||", "|", NULL};
 	
 	char cwd[1024];
+	int status;
 	char *line;
 
 	while (1) {
@@ -40,6 +41,7 @@ int main(int argc, char *argv[])
 
 		int num_tokens= 0;
 		char **tokens = tokenize(expanded, " \t\n", &num_tokens);
+		free(expanded);
 		if (!tokens)
 			return 1;
 
@@ -47,11 +49,13 @@ int main(int argc, char *argv[])
 		if (!cmds)
 			return 1;
 
-		if (execute(cmds) == EXIT_SHELL)
-			break;
+		status = execute(cmds);
 
 		destroy_tokens(tokens);
 		destroy_cmd_array(cmds);
+
+		if (status == EXIT_SHELL)
+			break;
 	}
 
 	return 0;

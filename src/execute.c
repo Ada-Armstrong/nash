@@ -1,20 +1,24 @@
 #include "execute.h"
 
-const int EXIT_SHELL = (int)'e' + (int)'x' + (int)'i' + (int)'t';
+static int is_builtin(struct cmd *c)
+{
+	for (int i = 0; Builtin_Names[i]; ++i) {
+		if (strcmp(c->tokens[0], Builtin_Names[i]) == 0)
+			return 1;
+	}
+
+	return 0;
+}
 
 static int execute_builtin(struct cmd *c)
 {
-	int status;
-	if (strcmp(c->tokens[0], "cd") == 0) {
-		status = c->tokens[1] ? chdir(c->tokens[1])
-			: chdir(getenv("HOME"));
-	} else if (strcmp(c->tokens[0], "exit") == 0) {
-		return EXIT_SHELL;
-	} else {
-		assert(0);
+	for (int i = 0; Builtin_Names[i]; ++i) {
+		if (strcmp(c->tokens[0], Builtin_Names[i]) == 0)
+			return Builtin_Funcs[i](c);
 	}
 
-	return c->negate ? !status : status;
+	assert(0);
+	return 0;
 }
 
 static int execute_program(struct cmd *c)
@@ -36,12 +40,6 @@ static int execute_program(struct cmd *c)
 	waitpid(child_pid, &status, WUNTRACED);
 
 	return c->negate ? !status : status;
-}
-
-static int is_builtin(struct cmd *c)
-{
-	return (strcmp(c->tokens[0], "cd") == 0)
-		|| (strcmp(c->tokens[0], "exit") == 0);
 }
 
 static int execute_and(struct cmd_array *cmds)

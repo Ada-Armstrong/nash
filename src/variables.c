@@ -9,9 +9,9 @@ int init_variables(void)
 
 int add_var(char *var, char *cmd)
 {
-	ENTRY e = {alias, cmd};
+	ENTRY e = {var, cmd};
 	if (!hsearch(e, ENTER)) {
-		fprintf(stderr, "Failed to add '%s'\n", alias);
+		fprintf(stderr, "Failed to add '%s'\n", var);
 		return 0;
 	}
 
@@ -21,7 +21,7 @@ int add_var(char *var, char *cmd)
 char *get_var(char *var)
 {
 	ENTRY e;
-	e.key = alias;
+	e.key = var;
 	ENTRY *ret = hsearch(e, FIND);
 	return ret ? ret->data : NULL;
 }
