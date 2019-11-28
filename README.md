@@ -1,4 +1,15 @@
-# NASH
+# nash - never alive shell
+
+## Features
+* Piping
+* Conditional execution (&&, ||)
+* Variables
+* Subshell expansion
+
+## Builtins
+* exit
+* cd
+* set \[var\] \[val\]
 
 ## Build Steps
 
