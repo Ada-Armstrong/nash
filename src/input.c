@@ -31,59 +31,41 @@ static char *final_word(char *string, int end)
 	return final;
 }
 
-static int my_readline(char **line, int *index, int *max)
+static int my_readline(string line)
 {
-	int i = *index;
-	int maxlen = *max;
 	char c;
-	char *tmp;
 
 	while (1) {
 		c = getc(stdin);
 		if (c == EOF || c == '\n')
 			break;
 
-		if (i >= maxlen - 1) {
-			maxlen *= 2;
-			tmp = realloc(*line, sizeof(**line) * maxlen);
-			if (!tmp) {
-				fprintf(stderr, "readline: Out of memory error\n");
-				free(*line);
-				return 0;
-			}
-			*line = tmp;
-		}
-
-		(*line)[i] = c;
-		++i;
+		append_s_string(line, c);
 	}
-	*index = i;
-	*max = maxlen;
+
 	return c == EOF ? -1 : 1;
 }
 
 char *read_input(char *prompt, char **cont_strings, int *len)
 {
-	int i = 0;
-	int maxlen = 2;
-	char *line = malloc(sizeof(*line) * maxlen);
-	if (!line) {
+	string s = create_s_string(NULL);
+	if (!s) {
 		fprintf(stderr, "read_input: Out of memory error\n");
-		exit(1);
+		return NULL;
 	}
-	char *tmp = NULL;
 
 	int finished = 1;
+
 	do {
 		if (!finished)
 			printf("%s", prompt);
-		int retval = my_readline(&line, &i, &maxlen);
+
+		int retval = my_readline(s);
 		
-		if (retval == 0)
+		if (retval <= 0)
 			return NULL;
 
-		line[i] = '\0';
-		char *final = final_word(line, i - 1);
+		char *final = final_word(show_s_string(s), size_s_string(s) - 1);
 
 		finished = 1;
 		char **strings = cont_strings;
@@ -96,19 +78,15 @@ char *read_input(char *prompt, char **cont_strings, int *len)
 		}
 
 		if (!finished && retval < 0) {
-			fprintf(stderr,
-				"Read EOF but last token was '%s'\n", final);
+			fprintf(stderr, "EOF but last token was '%s'\n", final);
 			return NULL;
 		}
 		free(final);
+
 	} while (!finished);
 
-	tmp = realloc(line, sizeof(*line) * i + 1);
-	if (!tmp) {
-		free(line);
-		exit(1);
-	}
-	*len = i;
+	char *line = convert_s_string(s);
+	destroy_s_string(s);
 
-	return tmp;
+	return line;
 }

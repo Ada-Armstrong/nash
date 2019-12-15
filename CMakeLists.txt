@@ -5,6 +5,10 @@ SET(PROJECT_NAME nash)
 project(${PROJECT_NAME} LANGUAGES C)
 
 SET(SOURCES main.c
+	src/smart_string.c
+	include/smart_string.h
+	src/program_vars.c
+	include/program_vars.h
 	src/input.c
 	include/input.h
 	src/expansion.c
@@ -27,5 +31,5 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 if (CMAKE_BUILD_TYPE EQUAL Debug)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Werror -pedantic)
 endif()

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "smart_string.h"
 
 /* Reads input from stdin until a newline is reached. Continues reading if
  * the last line ended with one of the strings in cont_strings. prompt is

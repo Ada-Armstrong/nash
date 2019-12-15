@@ -1,7 +1,6 @@
 #include "subshell.h"
 
-// temporary
-char *nash_path = "/home/chris/Projects/Shell/nash/build-debug/nash";
+char *nash_path = "/home/chris/Projects/nash/build";
 
 char *execute_subshell(char *line, int *len)
 {
