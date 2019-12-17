@@ -46,8 +46,10 @@ static int my_readline(string line)
 	return c == EOF ? -1 : 1;
 }
 
-char *read_input(char *prompt, char **cont_strings, int *len)
+char *read_input(char *prompt, int interactive)
 {
+	char *cont_strings[] = {"\\", "&&", "||", "|", NULL};
+	
 	string s = create_s_string(NULL);
 	if (!s) {
 		fprintf(stderr, "read_input: Out of memory error\n");
@@ -57,7 +59,7 @@ char *read_input(char *prompt, char **cont_strings, int *len)
 	int finished = 1;
 
 	do {
-		if (!finished)
+		if (interactive && !finished)
 			printf("%s", prompt);
 
 		int retval = my_readline(s);
@@ -68,10 +70,9 @@ char *read_input(char *prompt, char **cont_strings, int *len)
 		char *final = final_word(show_s_string(s), size_s_string(s) - 1);
 
 		finished = 1;
-		char **strings = cont_strings;
 
-		for (; *strings; ++strings) {
-			if (strcmp(final, *strings) == 0) {
+		for (int i = 0; cont_strings[i]; ++i) {
+			if (strcmp(final, cont_strings[i]) == 0) {
 				finished = 0;
 				break;
 			}

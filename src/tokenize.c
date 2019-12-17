@@ -16,52 +16,84 @@ static char *my_strtok(char *line)
 	while(*input && is_whitespace(*input))
 		++input;
 
+	char *final_token;
 	string token = create_s_string(NULL);
 	int flag_escape = 0;
 	char c;
 	
 	while(*input && !is_whitespace(*input)) {
 		c = *input;
+		if (flag_escape)
+			goto regular;
 
+		// scary switch statement
 		switch (c) {
 		case '\\':
-			if (flag_escape)
-				goto regular;
+			if (size_s_string(token) == 0
+					&& is_whitespace(*(input + 1))) {
+				++input;
+				while(*input && is_whitespace(*input))
+					++input;
+				continue;
+			} else if (is_whitespace(*(input + 1))) {
+				goto finished;
+			}
 			flag_escape = 1;
+			if (!append_s_string(token, c))
+				goto error;
 			break;
+		case ';':
+			if (size_s_string(token) != 0)
+				goto finished;
+			if (!append_s_string(token, c))
+				goto error;
+			++input;
+			goto finished;
+		case '|':
+		case '&':
+			if (size_s_string(token) != 0)
+				goto finished;
+			if (!append_s_string(token, c))
+				goto error;
+			++input;
+			if (*input == c) {
+				if (!append_s_string(token, c))
+					goto error;
+				++input;
+			}
+			goto finished;
 		case '\'':
 		case '"':
-			if (flag_escape)
-				goto regular;
+			if (!append_s_string(token, c))
+				goto error;
 			++input;
 			// skip until end of quote
 			while(*input != c) {
-				if (*input == '\0') {
-					//error
-					return NULL;
-				}
-				if (!append_s_string(token, *input)) {
-					destroy_s_string(token);
-					return NULL;
-				}
+				if (*input == '\0')
+					goto error;
+				if (!append_s_string(token, *input))
+					goto error;
 				++input;
 			}
+			if (!append_s_string(token, c))
+				goto error;
 			break;
 		regular:
 		default:
 			flag_escape = 0;
-			if (!append_s_string(token, c)) {
-				destroy_s_string(token);
-				return NULL;
-			}
+			if (!append_s_string(token, c))
+				goto error;
 		}
 
 		++input;
 	}
-	
-	char *ctoken = convert_s_string(token);
+finished:
+	final_token = convert_s_string(token);
 	destroy_s_string(token);
-	return ctoken;
+	return final_token;
+error:
+	destroy_s_string(token);
+	return NULL;
 }
 
 char **tokenize(char *input, int *len)
@@ -79,7 +111,7 @@ char **tokenize(char *input, int *len)
 		if (index >= max_tokens - 1) {
 			max_tokens *= 2;
 			tmp = realloc(tokens, sizeof(*tokens) * max_tokens);
-			if (!tokens)
+			if (!tmp)
 				return NULL;
 			tokens = tmp;
 		}

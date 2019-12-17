@@ -1,13 +1,13 @@
-#include "variables.h"
+#include "alias.h"
 
 static const size_t SIZE = 512;
 
-int init_variables(void)
+int init_alias(void)
 {
 	return hcreate(SIZE);
 }
 
-int add_var(char *var, char *cmd)
+int add_alias(char *var, char *cmd)
 {
 	ENTRY e = {var, cmd};
 	// check if var is already defined
@@ -24,7 +24,7 @@ int add_var(char *var, char *cmd)
 	return 1;
 }
 
-char *get_var(char *var)
+char *get_alias(char *var)
 {
 	ENTRY e;
 	e.key = var;
@@ -32,7 +32,7 @@ char *get_var(char *var)
 	return ret ? ret->data : NULL;
 }
 
-void destroy_variables(void)
+void destroy_alias(void)
 {
 	// leaks memory if there are elements present in the table
 	hdestroy();

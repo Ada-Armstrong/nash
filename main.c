@@ -14,8 +14,6 @@ int main(int argc, char *argv[])
 	if (argc > 1 && !handle_args(++argv))
 		return 1;
 
-	char *cont_strings[] = {"\\", "&&", "||", "|", NULL};
-	
 	int status;
 	char *line;
 
@@ -23,11 +21,11 @@ int main(int argc, char *argv[])
 		if (get_option(Interactive))
 			print_prompt("$ ");
 
-		int len = 0;
-		line = read_input("> ", cont_strings, &len);
+		line = read_input("> ", get_option(Interactive));
 		if (!line)
 			return 1;
 
+		int len = 0;
 		char **tokens = tokenize(line, &len);
 		free(line);
 		if (!tokens)

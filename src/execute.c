@@ -151,6 +151,7 @@ int execute(struct cmd_array *cmds)
 	if (!cmds)
 		return -1;
 	struct cmd *curr = cmds->array[cmds->index];
+	// do expansions here
 
 	int status;
 

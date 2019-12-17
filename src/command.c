@@ -2,7 +2,8 @@
 
 char *Split_Tokens[] = {"|", "&&", "||", ";", NULL};
 
-static struct cmd *create_cmd(char **tokens, enum s_token split_token, int negate)
+static struct cmd *create_cmd(char **tokens, enum s_token split_token,
+		int negate)
 {
 	struct cmd *c = malloc(sizeof(*c));
 	if (!c) {
