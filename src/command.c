@@ -23,6 +23,9 @@ static void destroy_cmd(struct cmd *c)
 {
 	if (!c)
 		return;
+	for (int i = 0; c->tokens[i]; ++i) {
+		free(c->tokens[i]);
+	}
 	free(c->tokens);
 	free(c);
 }
@@ -36,6 +39,15 @@ static enum s_token is_split_token(char *token)
 			return i;
 	}
 	return NONE;
+}
+
+static char *malloc_cpy(char *string)
+{
+	if (!string)
+		return NULL;
+	int len = strlen(string);
+	char *new = malloc(sizeof(*new) * (len + 1));
+	return strcpy(new, string);
 }
 
 static char **seperate_tokens(char **tokens, int *index, enum s_token *split)
@@ -59,7 +71,7 @@ static char **seperate_tokens(char **tokens, int *index, enum s_token *split)
 		return NULL;
 
 	for (int i = 0; i < *index; ++i) {
-		cmd_tokens[i] = tokens[i];
+		cmd_tokens[i] = malloc_cpy(tokens[i]);
 	}
 	cmd_tokens[*index] = NULL;
 

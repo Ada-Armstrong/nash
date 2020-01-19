@@ -4,12 +4,14 @@
 #include "expansion.h"
 #include "tokenize.h"
 #include "execute.h"
+#include "alias.h"
 
 void print_prompt(char *ps1);
 
 int main(int argc, char *argv[])
 {
 	init_program_vars();
+	init_alias();
 
 	if (argc > 1 && !handle_args(++argv))
 		return 1;
@@ -17,7 +19,7 @@ int main(int argc, char *argv[])
 	int status;
 	char *line;
 
-	while (1) {
+	do {
 		if (get_option(Interactive))
 			print_prompt("$ ");
 
@@ -32,17 +34,17 @@ int main(int argc, char *argv[])
 			return 1;
 
 		struct cmd_array *cmds = create_cmd_array(tokens);
+		destroy_tokens(tokens);
 		if (!cmds)
 			return 1;
 
 		status = execute(cmds);
 
-		destroy_tokens(tokens);
 		destroy_cmd_array(cmds);
 
-		if (status == EXIT_SHELL)
-			break;
-	}
+	} while(status != EXIT_SHELL);
+
+	destroy_alias();
 
 	return 0;
 }

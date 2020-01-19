@@ -24,12 +24,19 @@ int add_alias(char *var, char *cmd)
 	return 1;
 }
 
+static char *malloc_cpy(char *string)
+{
+	int len = strlen(string);
+	char *new = malloc(sizeof(*new) * (len + 1));
+	return strcpy(new, string);
+}
+
 char *get_alias(char *var)
 {
 	ENTRY e;
 	e.key = var;
 	ENTRY *ret = hsearch(e, FIND);
-	return ret ? ret->data : NULL;
+	return ret ? malloc_cpy(ret->data) : NULL;
 }
 
 void destroy_alias(void)

@@ -1,5 +1,5 @@
 #include "expansion.h"
-
+/*
 static char *expand_recur(char *line, int len, int *added);
 
 static char closing_char(char c)
@@ -196,4 +196,37 @@ char *expand(char *line, int len)
 {
 	int added = 0;
 	return expand_recur(line, len, &added);
+}
+*/
+
+char **expand(char **tokens)
+{
+	if (!tokens)
+		return NULL;
+	glob_t glob_buff;
+	glob_buff.gl_offs = 0;
+
+	char **curr = tokens;
+	const int flags = GLOB_NOCHECK | GLOB_MARK | GLOB_PERIOD
+			| GLOB_BRACE | GLOB_TILDE;
+	
+	glob(*curr, flags, NULL, &glob_buff);
+	free(*curr);
+	++curr;
+
+	char *alias = get_alias(glob_buff.gl_pathv[0]);
+	if (alias) {
+		free(glob_buff.gl_pathv[0]);
+		glob_buff.gl_pathv[0] = alias;
+	}
+
+	while (*curr) {
+		glob(*curr, flags | GLOB_APPEND, NULL, &glob_buff);
+		free(*curr);
+		++curr;
+	}
+
+	free(tokens);
+
+	return glob_buff.gl_pathv;
 }

@@ -2,9 +2,9 @@
 
 const int EXIT_SHELL = (int)'e' + (int)'x' + (int)'i' + (int)'t';
 
-char *Builtin_Names [] = {"exit", "cd", "set", NULL};
+char *Builtin_Names [] = {"exit", "cd", "alias", NULL};
 int (*Builtin_Funcs[])(struct cmd *) = {builtin_exit, builtin_cd,
-	builtin_set, NULL};
+		builtin_alias, NULL};
 
 int builtin_exit(struct cmd *c)
 {
@@ -14,10 +14,11 @@ int builtin_exit(struct cmd *c)
 int builtin_cd(struct cmd *c)
 {
 	int status = c->tokens[1] ? chdir(c->tokens[1]) : chdir(getenv("HOME"));
+	// add error message here
 	return c->negate ? !status : status;
 }
 
-int builtin_set(struct cmd *c)
+int builtin_alias(struct cmd *c)
 {
 	int argc = 0;
 	for (char **t = c->tokens; *t; ++t) {
@@ -38,6 +39,6 @@ int builtin_set(struct cmd *c)
 	strcpy(key, c->tokens[1]);
 	strcpy(val, c->tokens[2]);
 
-	int status = !add_var(key, val);
+	int status = !add_alias(key, val);
 	return c->negate ? !status : status;
 }

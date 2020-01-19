@@ -152,6 +152,7 @@ int execute(struct cmd_array *cmds)
 		return -1;
 	struct cmd *curr = cmds->array[cmds->index];
 	// do expansions here
+	curr->tokens = expand(curr->tokens);
 
 	int status;
 

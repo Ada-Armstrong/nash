@@ -2,12 +2,10 @@
 #define __NASH_EXPANSION_H__
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
+#include <glob.h>
 #include "subshell.h"
-#include "variables.h"
+#include "alias.h"
 
-char *expand(char *line, int len);
+char **expand(char **tokens);
 
 #endif

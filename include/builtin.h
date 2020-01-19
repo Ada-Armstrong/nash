@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include "command.h"
-#include "variables.h"
+#include "alias.h"
 
 extern const int EXIT_SHELL;
 
@@ -14,6 +14,6 @@ int builtin_exit(struct cmd *c);
 
 int builtin_cd(struct cmd *c);
 
-int builtin_set(struct cmd *c);
+int builtin_alias(struct cmd *c);
 
 #endif

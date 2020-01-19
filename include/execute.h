@@ -6,6 +6,7 @@
 #include <assert.h>
 #include "command.h"
 #include "builtin.h"
+#include "expansion.h"
 
 int execute(struct cmd_array *cmds);
 

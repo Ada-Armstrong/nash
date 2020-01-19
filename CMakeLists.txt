@@ -11,12 +11,10 @@ SET(SOURCES main.c
 	include/program_vars.h
 	src/input.c
 	include/input.h
-	src/expansion.c
-	include/expansion.h
 	src/subshell.c
 	include/subshell.h
-	src/variables.c
-	include/variables.h
+	src/alias.c
+	include/alias.h
 	src/tokenize.c
 	include/tokenize.h
 	src/command.c
@@ -25,6 +23,8 @@ SET(SOURCES main.c
 	include/execute.h
 	src/builtin.c
 	include/builtin.h
+	src/expansion.c
+	include/expansion.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
