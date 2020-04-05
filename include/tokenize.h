@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "smart_string.h"
 
 char **tokenize(char *input, int *len);

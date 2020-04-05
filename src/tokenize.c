@@ -62,6 +62,26 @@ static char *my_strtok(char *line)
 				++input;
 			}
 			goto finished;
+		case '$':
+			if (!append_s_string(token, c))
+				goto error;
+			++input;
+			c = ')';
+			if (*input != '(' || !append_s_string(token, *input))
+				goto error;
+			++input;
+			// skip until ) 
+			while(*input != c) {
+				if (*input == '\0')
+					goto error;
+				if (!append_s_string(token, *input))
+					goto error;
+				++input;
+			}
+			if (!append_s_string(token, c))
+				goto error;
+			++input;
+			goto finished;
 		case '\'':
 		case '"':
 			if (!append_s_string(token, c))
@@ -92,6 +112,7 @@ finished:
 	destroy_s_string(token);
 	return final_token;
 error:
+	fprintf(stderr, "nash: syntax error near unexpected token `%c`", c);
 	destroy_s_string(token);
 	return NULL;
 }

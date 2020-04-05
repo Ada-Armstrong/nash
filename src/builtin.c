@@ -26,14 +26,14 @@ int builtin_alias(struct cmd *c)
 	}
 
 	if (argc != 3) {
-		fprintf(stderr, "Incorrect number of arguments for set\n");
+		fprintf(stderr, "Incorrect number of arguments for alias\n");
 		return 0;
 	}
 
 	char *key = malloc(sizeof(*key) * (strlen(c->tokens[1]) + 1));
 	char *val = malloc(sizeof(*val) * (strlen(c->tokens[2]) + 1));
 	if (!key || !val) {
-		fprintf(stderr, "builtin_set: Out of memory error\n");
+		fprintf(stderr, "builtin_alias: Out of memory error\n");
 		exit(1);
 	}
 	strcpy(key, c->tokens[1]);
