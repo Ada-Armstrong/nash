@@ -1,5 +1,7 @@
 # nash - Never Alive SHell
 
+![logo](images/nash_logo.png)
+
 ## Features
 * Piping
 * Conditional execution (&&, ||)
