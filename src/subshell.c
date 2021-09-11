@@ -1,7 +1,6 @@
 #include "subshell.h"
 
-// temporary
-char *nash_path = "/home/chris/Projects/Shell/nash/build-debug/nash";
+#define NASH_PATH_LEN 256
 
 char *execute_subshell(char *line, int *len)
 {
@@ -20,6 +19,11 @@ char *execute_subshell(char *line, int *len)
 		close(pipefid[0]);
 		dup2(pipefid[1], STDOUT_FILENO);
 		close(pipefid[1]);
+
+		// get nash path
+		char nash_path[NASH_PATH_LEN] = {0};
+		readlink("/proc/self/exe", nash_path, NASH_PATH_LEN);
+
 		// run nash in subshell mode
 		char *nash[] = {nash_path, "-c", line, NULL};
 		execvp(nash[0], nash);
